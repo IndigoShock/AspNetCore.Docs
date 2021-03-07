@@ -1,3 +1,6 @@
+---
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
+---
 ::: moniker range=">= aspnetcore-3.0"
 
 <a name="dc"></a>
@@ -20,17 +23,7 @@ Add a connection string to the *appsettings.json* file:
 
 ### Add NuGet packages and EF tools
 
-Run the following .NET Core CLI commands:
-
-```console
-dotnet tool install --global dotnet-ef --version 3.0.0-*
-dotnet add package Microsoft.EntityFrameworkCore.SQLite --version 3.0.0-*
-dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design --version 3.0.0-*
-dotnet add package Microsoft.EntityFrameworkCore.Design --version 3.0.0-*
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 3.0.0-*
-```
-
-The preceding commands add Entity Framework Core Tools for the .NET CLI and several packages to the project. The `Microsoft.VisualStudio.Web.CodeGeneration.Design` package is required for scaffolding.
+[!INCLUDE[](~/includes/add-EF-NuGet-SQLite-CLI.md)]
 
 <a name="reg"></a>
 
@@ -71,7 +64,7 @@ Add a connection string to the *appsettings.json* file:
 
 Run the following .NET Core CLI command to add SQLite and CodeGeneration.Design  to the project:
 
-```console
+```dotnetcli
 dotnet add package Microsoft.EntityFrameworkCore.SQLite
 dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
 ```

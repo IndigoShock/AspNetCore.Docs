@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +22,7 @@ namespace FileProviderSample
             #region snippet1
             var physicalProvider = _env.ContentRootFileProvider;
             var manifestEmbeddedProvider = 
-                new ManifestEmbeddedFileProvider(Assembly.GetEntryAssembly());
+                new ManifestEmbeddedFileProvider(typeof(Program).Assembly);
             var compositeProvider = 
                 new CompositeFileProvider(physicalProvider, manifestEmbeddedProvider);
 
@@ -31,9 +30,9 @@ namespace FileProviderSample
             #endregion
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }

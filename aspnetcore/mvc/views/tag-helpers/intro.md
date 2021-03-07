@@ -5,6 +5,7 @@ description: Learn what Tag Helpers are and how to use them in ASP.NET Core.
 ms.author: riande
 ms.custom: H1Hack27Feb2017
 ms.date: 03/18/2019
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: mvc/views/tag-helpers/intro
 ---
 # Tag Helpers in ASP.NET Core
@@ -131,6 +132,22 @@ The same hierarchy rules that apply to `@addTagHelper` also apply to `@tagHelper
 
 Many Tag Helpers can't be used as self-closing tags. Some Tag Helpers are designed to be self-closing tags. Using a Tag Helper that was not designed to be self-closing suppresses the rendered output. Self-closing a Tag Helper results in a self-closing tag in the rendered output. For more information, see [this note](xref:mvc/views/tag-helpers/authoring#self-closing) in [Authoring Tag Helpers](xref:mvc/views/tag-helpers/authoring).
 
+## C# in Tag Helpers attribute/declaration 
+
+Tag Helpers do not allow C# in the element's attribute or tag declaration area. For example, the following code is not valid:
+
+```cshtml
+<input asp-for="LastName"  
+       @(Model?.LicenseId == null ? "disabled" : string.Empty) />
+```
+
+The preceding code can be written as:
+
+```cshtml
+<input asp-for="LastName" 
+       disabled="@(Model?.LicenseId == null)" />
+```
+
 ## IntelliSense support for Tag Helpers
 
 When you create a new ASP.NET Core web app in Visual Studio, it adds the NuGet package "Microsoft.AspNetCore.Razor.Tools". This is the package that adds Tag Helper tooling.
@@ -217,7 +234,7 @@ The markup is much cleaner and easier to read, edit, and maintain than the HTML 
 
 Consider the *Email* group:
 
-[!code-csharp[](intro/sample/Register.cshtml?range=12-18)]
+[!code-cshtml[](intro/sample/Register.cshtml?range=12-18)]
 
 Each of the "asp-" attributes has a value of "Email", but "Email" isn't a string. In this context, "Email" is the C# model expression property for the `RegisterViewModel`.
 
@@ -225,9 +242,9 @@ The Visual Studio editor helps you write **all** of the markup in the Tag Helper
 
 ## Tag Helpers compared to Web Server Controls
 
-* Tag Helpers don't own the element they're associated with; they simply participate in the rendering of the element and content. ASP.NET [Web Server controls](https://msdn.microsoft.com/library/7698y1f0.aspx) are declared and invoked on a page.
+* Tag Helpers don't own the element they're associated with; they simply participate in the rendering of the element and content. ASP.NET <https://docs.microsoft.com/previous-versions/dotnet/netframework-3.0/7698y1f0(v=vs.85)> are declared and invoked on a page.
 
-* [Web Server controls](https://msdn.microsoft.com/library/zsyt68f1.aspx) have a non-trivial lifecycle that can make developing and debugging difficult.
+* <https://docs.microsoft.com/previous-versions/zsyt68f1(v=vs.140)> have a non-trivial lifecycle that can make developing and debugging difficult.
 
 * Web Server controls allow you to add functionality to the client Document Object Model (DOM) elements by using a client control. Tag Helpers have no DOM.
 

@@ -1,21 +1,20 @@
 ---
 title: Detect changes with change tokens in ASP.NET Core
-author: guardrex
+author: rick-anderson
 description: Learn how to use change tokens to track changes.
 monikerRange: '>= aspnetcore-2.1'
 ms.author: riande
-ms.date: 08/27/2019
+ms.date: 10/07/2019
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: fundamentals/change-tokens
 ---
 # Detect changes with change tokens in ASP.NET Core
-
-By [Luke Latham](https://github.com/guardrex)
 
 ::: moniker range=">= aspnetcore-3.0"
 
 A *change token* is a general-purpose, low-level building block used to track state changes.
 
-[View or download sample code](https://github.com/aspnet/AspNetCore.Docs/tree/master/aspnetcore/fundamentals/change-tokens/samples/) ([how to download](xref:index#how-to-download-a-sample))
+[View or download sample code](https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/fundamentals/change-tokens/samples/) ([how to download](xref:index#how-to-download-a-sample))
 
 ## IChangeToken interface
 
@@ -109,8 +108,8 @@ The constructor of the implemented class, `ConfigurationMonitor`, registers a ca
 
 `config.GetReloadToken()` supplies the token. `InvokeChanged` is the callback method. The `state` in this instance is a reference to the `IConfigurationMonitor` instance that's used to access the monitoring state. Two properties are used:
 
-* `MonitoringEnabled` &ndash; Indicates if the callback should run its custom code.
-* `CurrentState` &ndash; Describes the current monitoring state for use in the UI.
+* `MonitoringEnabled`: Indicates if the callback should run its custom code.
+* `CurrentState`: Describes the current monitoring state for use in the UI.
 
 The `InvokeChanged` method is similar to the earlier approach, except that it:
 
@@ -166,7 +165,7 @@ If cached content isn't found using the cache key, the following actions are tak
 1. A change token is obtained from the file provider with [IFileProviders.Watch](xref:Microsoft.Extensions.FileProviders.IFileProvider.Watch*). The token's callback is triggered when the file is modified.
 1. The file content is cached with a [sliding expiration](xref:Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions.SlidingExpiration) period. The change token is attached with [MemoryCacheEntryExtensions.AddExpirationToken](xref:Microsoft.Extensions.Caching.Memory.MemoryCacheEntryExtensions.AddExpirationToken*) to evict the cache entry if the file changes while it's cached.
 
-In the following example, files are stored in the app's content root. `IWebHostEnvironment.ContentRootFileProvider` is used to obtain an <xref:Microsoft.Extensions.FileProviders.IFileProvider> pointing at the app's `IWebHostEnvironment.ContentRootPath`. The `filePath` is obtained with [IFileInfo.PhysicalPath](xref:Microsoft.Extensions.FileProviders.IFileInfo.PhysicalPath).
+In the following example, files are stored in the app's [content root](xref:fundamentals/index#content-root). `IWebHostEnvironment.ContentRootFileProvider` is used to obtain an <xref:Microsoft.Extensions.FileProviders.IFileProvider> pointing at the app's `IWebHostEnvironment.ContentRootPath`. The `filePath` is obtained with [IFileInfo.PhysicalPath](xref:Microsoft.Extensions.FileProviders.IFileInfo.PhysicalPath).
 
 [!code-csharp[](change-tokens/samples/3.x/SampleApp/Services/FileService.cs?name=snippet1)]
 
@@ -213,7 +212,7 @@ var compositeChangeToken =
 
 A *change token* is a general-purpose, low-level building block used to track state changes.
 
-[View or download sample code](https://github.com/aspnet/AspNetCore.Docs/tree/master/aspnetcore/fundamentals/change-tokens/samples/) ([how to download](xref:index#how-to-download-a-sample))
+[View or download sample code](https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/fundamentals/change-tokens/samples/) ([how to download](xref:index#how-to-download-a-sample))
 
 ## IChangeToken interface
 
@@ -307,8 +306,8 @@ The constructor of the implemented class, `ConfigurationMonitor`, registers a ca
 
 `config.GetReloadToken()` supplies the token. `InvokeChanged` is the callback method. The `state` in this instance is a reference to the `IConfigurationMonitor` instance that's used to access the monitoring state. Two properties are used:
 
-* `MonitoringEnabled` &ndash; Indicates if the callback should run its custom code.
-* `CurrentState` &ndash; Describes the current monitoring state for use in the UI.
+* `MonitoringEnabled`: Indicates if the callback should run its custom code.
+* `CurrentState`: Describes the current monitoring state for use in the UI.
 
 The `InvokeChanged` method is similar to the earlier approach, except that it:
 
@@ -364,7 +363,7 @@ If cached content isn't found using the cache key, the following actions are tak
 1. A change token is obtained from the file provider with [IFileProviders.Watch](xref:Microsoft.Extensions.FileProviders.IFileProvider.Watch*). The token's callback is triggered when the file is modified.
 1. The file content is cached with a [sliding expiration](xref:Microsoft.Extensions.Caching.Memory.MemoryCacheEntryOptions.SlidingExpiration) period. The change token is attached with [MemoryCacheEntryExtensions.AddExpirationToken](xref:Microsoft.Extensions.Caching.Memory.MemoryCacheEntryExtensions.AddExpirationToken*) to evict the cache entry if the file changes while it's cached.
 
-In the following example, files are stored in the app's content root. [IHostingEnvironment.ContentRootFileProvider](xref:Microsoft.AspNetCore.Hosting.IHostingEnvironment.ContentRootFileProvider) is used to obtain an <xref:Microsoft.Extensions.FileProviders.IFileProvider> pointing at the app's <xref:Microsoft.AspNetCore.Hosting.IHostingEnvironment.ContentRootPath>. The `filePath` is obtained with [IFileInfo.PhysicalPath](xref:Microsoft.Extensions.FileProviders.IFileInfo.PhysicalPath).
+In the following example, files are stored in the app's [content root](xref:fundamentals/index#content-root). [IHostingEnvironment.ContentRootFileProvider](xref:Microsoft.AspNetCore.Hosting.IHostingEnvironment.ContentRootFileProvider) is used to obtain an <xref:Microsoft.Extensions.FileProviders.IFileProvider> pointing at the app's <xref:Microsoft.AspNetCore.Hosting.IHostingEnvironment.ContentRootPath>. The `filePath` is obtained with [IFileInfo.PhysicalPath](xref:Microsoft.Extensions.FileProviders.IFileInfo.PhysicalPath).
 
 [!code-csharp[](change-tokens/samples/2.x/SampleApp/Services/FileService.cs?name=snippet1)]
 

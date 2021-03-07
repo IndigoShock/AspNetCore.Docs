@@ -1,14 +1,15 @@
 ---
-title: Razor Pages with EF Core in ASP.NET Core - Data Model - 5 of 8
-author: tdykstra
-description: In this tutorial, add more entities and relationships and customize the data model by specifying formatting, validation, and mapping rules.
+title: Part 5, Razor Pages with EF Core in ASP.NET Core - Data Model
+author: rick-anderson
+description: Part 5 of Razor Pages and Entity Framework tutorial series.
 ms.author: riande
 ms.custom: mvc
 ms.date: 07/22/2019
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: data/ef-rp/complex-data-model
 ---
 
-# Razor Pages with EF Core in ASP.NET Core - Data Model - 5 of 8
+# Part 5, Razor Pages with EF Core in ASP.NET Core - Data Model
 
 By [Tom Dykstra](https://github.com/tdykstra) and [Rick Anderson](https://twitter.com/RickAndMSFT)
 
@@ -54,7 +55,7 @@ The preceding code adds a `FullName` property and adds the following attributes 
 
 For student enrollment dates, all of the pages currently display the time of day along with the date, although only the date is relevant. By using data annotation attributes, you can make one code change that will fix the display format in every page that shows the data. 
 
-The [DataType](/dotnet/api/system.componentmodel.dataannotations.datatypeattribute?view=netframework-4.7.1) attribute specifies a data type that's more specific than the database intrinsic type. In this case only the date should be displayed, not the date and time. The [DataType Enumeration](/dotnet/api/system.componentmodel.dataannotations.datatype?view=netframework-4.7.1) provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, etc. The `DataType` attribute can also enable the app to automatically provide type-specific features. For example:
+The [DataType](/dotnet/api/system.componentmodel.dataannotations.datatypeattribute) attribute specifies a data type that's more specific than the database intrinsic type. In this case only the date should be displayed, not the date and time. The [DataType Enumeration](/dotnet/api/system.componentmodel.dataannotations.datatype) provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, etc. The `DataType` attribute can also enable the app to automatically provide type-specific features. For example:
 
 * The `mailto:` link is automatically created for `DataType.EmailAddress`.
 * The date selector is provided for `DataType.Date` in most browsers.
@@ -84,14 +85,14 @@ For more information, see the [\<input> Tag Helper documentation](xref:mvc/views
 [StringLength(50, ErrorMessage = "First name cannot be longer than 50 characters.")]
 ```
 
-Data validation rules and validation error messages can be specified with attributes. The [StringLength](/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute?view=netframework-4.7.1) attribute specifies the minimum and maximum length of characters that are allowed in a data field. The code shown limits names to no more than 50 characters. An example that sets the minimum string length is shown [later](#the-required-attribute).
+Data validation rules and validation error messages can be specified with attributes. The [StringLength](/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute) attribute specifies the minimum and maximum length of characters that are allowed in a data field. The code shown limits names to no more than 50 characters. An example that sets the minimum string length is shown [later](#the-required-attribute).
 
 The `StringLength` attribute also provides client-side and server-side validation. The minimum value has no impact on the database schema.
 
-The `StringLength` attribute doesn't prevent a user from entering white space for a name. The [RegularExpression](/dotnet/api/system.componentmodel.dataannotations.regularexpressionattribute?view=netframework-4.7.1) attribute can be used to apply restrictions to the input. For example, the following code requires the first character to be upper case and the remaining characters to be alphabetical:
+The `StringLength` attribute doesn't prevent a user from entering white space for a name. The [RegularExpression](/dotnet/api/system.componentmodel.dataannotations.regularexpressionattribute) attribute can be used to apply restrictions to the input. For example, the following code requires the first character to be upper case and the remaining characters to be alphabetical:
 
 ```csharp
-[RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+[RegularExpression(@"^[A-Z]+[a-zA-Z]*$")]
 ```
 
 # [Visual Studio](#tab/visual-studio)
@@ -192,7 +193,7 @@ SqliteException: SQLite Error 1: 'no such column: s.FirstName'.
 
 * Open a command window in the project folder. Enter the following commands to create a new migration and update the database:
 
-  ```console
+  ```dotnetcli
   dotnet ef migrations add ColumnFirstName
   dotnet ef database update
   ```
@@ -208,7 +209,7 @@ For this tutorial, the way to get past this error is to delete and re-create the
 * Delete the *Migrations* folder.
 * Run the following commands to drop the database, create a new initial migration, and apply the migration:
 
-  ```console
+  ```dotnetcli
   dotnet ef database drop --force
   dotnet ef migrations add InitialCreate
   dotnet ef database update
@@ -607,13 +608,13 @@ To force EF Core to create a new database, drop and update the database:
 
 * Run the following command:
 
-  ```console
+  ```dotnetcli
   dotnet ef database drop --force
   ```
 
 * Delete the *Migrations* folder, then run the following command:
 
-  ```console
+  ```dotnetcli
   dotnet ef migrations add InitialCreate
   dotnet ef database update
   ```
@@ -677,8 +678,7 @@ In the `ComplexDataModel` migration class, update the `Up` method:
 
 Add the following highlighted code. The new code goes after the `.CreateTable( name: "Department"` block:
 
-[!code-csharp[](intro/samples/cu30snapshots/5-complex/Migrations/
-ComplexDataModel.cs?name=snippet_CreateDefaultValue&highlight=23-31)]
+[!code-csharp[](intro/samples/cu30snapshots/5-complex/Migrations/ComplexDataModel.cs?name=snippet_CreateDefaultValue&highlight=23-31)]
 
 With the preceding changes, existing `Course` rows will be related to the "Temp" department after the `ComplexDataModel.Up` method runs.
 
@@ -701,7 +701,7 @@ Because the `DbInitializer.Initialize` method is designed to work only with an e
 
 * If you're using SQL Server LocalDB with Visual Studio Code, run the following command:
 
-  ```console
+  ```dotnetcli
   dotnet ef database update
   ```
 
@@ -731,7 +731,7 @@ The entity classes for the completed data model are shown in the following illus
 ![Entity diagram](complex-data-model/_static/diagram.png)
 
 If you run into problems you can't solve, download the [completed app](
-https://github.com/aspnet/AspNetCore.Docs/tree/master/aspnetcore/data/ef-rp/intro/samples).
+https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/data/ef-rp/intro/samples).
 
 ## Customize the data model with attributes
 
@@ -745,7 +745,7 @@ Update *Models/Student.cs* with the following highlighted code:
 
 [!code-csharp[](intro/samples/cu21/Models/Student.cs?name=snippet_DataType&highlight=3,12-13)]
 
-The [DataType](/dotnet/api/system.componentmodel.dataannotations.datatypeattribute?view=netframework-4.7.1) attribute specifies a data type that's more specific than the database intrinsic type. In this case only the date should be displayed, not the date and time. The [DataType Enumeration](/dotnet/api/system.componentmodel.dataannotations.datatype?view=netframework-4.7.1) provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, etc. The `DataType` attribute can also enable the app to automatically provide type-specific features. For example:
+The [DataType](/dotnet/api/system.componentmodel.dataannotations.datatypeattribute) attribute specifies a data type that's more specific than the database intrinsic type. In this case only the date should be displayed, not the date and time. The [DataType Enumeration](/dotnet/api/system.componentmodel.dataannotations.datatype) provides for many data types, such as Date, Time, PhoneNumber, Currency, EmailAddress, etc. The `DataType` attribute can also enable the app to automatically provide type-specific features. For example:
 
 * The `mailto:` link is automatically created for `DataType.EmailAddress`.
 * The date selector is provided for `DataType.Date` in most browsers.
@@ -775,17 +775,17 @@ Run the app. Navigate to the Students Index page. Times are no longer displayed.
 
 ### The StringLength attribute
 
-Data validation rules and validation error messages can be specified with attributes. The [StringLength](/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute?view=netframework-4.7.1) attribute specifies the minimum and maximum length of characters that are allowed in a data field. The `StringLength` attribute
+Data validation rules and validation error messages can be specified with attributes. The [StringLength](/dotnet/api/system.componentmodel.dataannotations.stringlengthattribute) attribute specifies the minimum and maximum length of characters that are allowed in a data field. The `StringLength` attribute
 also provides client-side and server-side validation. The minimum value has no impact on the database schema.
 
 Update the `Student` model with the following code:
 
 [!code-csharp[](intro/samples/cu21/Models/Student.cs?name=snippet_StringLength&highlight=10,12)]
 
-The preceding code limits names to no more than 50 characters. The `StringLength` attribute doesn't prevent a user from entering white space for a name. The [RegularExpression](/dotnet/api/system.componentmodel.dataannotations.regularexpressionattribute?view=netframework-4.7.1) attribute is used to apply restrictions to the input. For example, the following code requires the first character to be upper case and the remaining characters to be alphabetical:
+The preceding code limits names to no more than 50 characters. The `StringLength` attribute doesn't prevent a user from entering white space for a name. The [RegularExpression](/dotnet/api/system.componentmodel.dataannotations.regularexpressionattribute) attribute is used to apply restrictions to the input. For example, the following code requires the first character to be upper case and the remaining characters to be alphabetical:
 
 ```csharp
-[RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+[RegularExpression(@"^[A-Z]+[a-zA-Z]*$")]
 ```
 
 Run the app:
@@ -818,7 +818,7 @@ With the preceding change, `Student.FirstMidName` in the app maps to the `FirstN
 
 The addition of the `Column` attribute changes the model backing the `SchoolContext`. The model backing the `SchoolContext` no longer matches the database. If the app is run before applying migrations, the following exception is generated:
 
-```SQL
+```
 SqlException: Invalid column name 'FirstName'.
 ```
 
@@ -829,14 +829,14 @@ To update the DB:
 
 # [Visual Studio](#tab/visual-studio)
 
-```PMC
+```powershell
 Add-Migration ColumnFirstName
 Update-Database
 ```
 
 # [Visual Studio Code](#tab/visual-studio-code)
 
-```console
+```dotnetcli
 dotnet ef migrations add ColumnFirstName
 dotnet ef database update
 ```
@@ -1244,13 +1244,13 @@ Build the project.
 
 # [Visual Studio](#tab/visual-studio)
 
-```PMC
+```powershell
 Add-Migration ComplexDataModel
 ```
 
 # [Visual Studio Code](#tab/visual-studio-code)
 
-```console
+```dotnetcli
 dotnet ef migrations add ComplexDataModel
 ```
 
@@ -1288,7 +1288,7 @@ The code in the updated `DbInitializer` adds seed data for the new entities. To 
 
 In the **Package Manager Console** (PMC), run the following command:
 
-```PMC
+```powershell
 Drop-Database
 Update-Database
 ```
@@ -1301,10 +1301,10 @@ Open a command window and navigate to the project folder. The project folder con
 
 Enter the following in the command window:
 
- ```console
- dotnet ef database drop
+```dotnetcli
+dotnet ef database drop
 dotnet ef database update
- ```
+```
 
 ---
 

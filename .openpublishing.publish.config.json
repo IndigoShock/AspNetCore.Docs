@@ -9,11 +9,16 @@
       "moniker_ranges": [
         ">= aspnetcore-1.0"
       ],
+      "xref_query_tags": [
+        "/dotnet",
+        "/aspnet"
+      ],
       "open_to_public_contributors": true,
       "type_mapping": {
         "Conceptual": "Content",
         "ManagedReference": "Content",
-        "RestApi": "Content"
+        "RestApi": "Content",
+        "ZonePivotGroups": "Toc"
       },
       "template_folder": "_themes",
       "version": 0
@@ -37,6 +42,12 @@
       "url": "https://github.com/Microsoft/templates.docs.msft.pdf",
       "branch": "master",
       "branch_mapping": {}
+    },
+    {
+      "path_to_root": "xamarin-forms-samples",
+      "url": "https://github.com/xamarin/xamarin-forms-samples",
+      "branch": "master",
+      "branch_mapping": {}
     }
   ],
   "branch_target_mapping": {
@@ -56,5 +67,8 @@
     }
   },
   "need_generate_pdf": false,
-  "need_generate_intellisense": false
+  "need_generate_intellisense": false,
+  "docs_build_engine": {
+    "name": "docfx_v3"
+  }
 }

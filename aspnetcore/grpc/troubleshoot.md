@@ -5,7 +5,8 @@ description: Troubleshoot errors when using gRPC on .NET Core.
 monikerRange: '>= aspnetcore-3.0'
 ms.author: jamesnk
 ms.custom: mvc
-ms.date: 09/05/2019
+ms.date: 07/09/2020
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: grpc/troubleshoot
 ---
 # Troubleshoot gRPC on .NET Core
@@ -54,13 +55,13 @@ You may see this error if you are testing your app locally and the ASP.NET Core 
 If you are calling a gRPC service on another machine and are unable to trust the certificate then the gRPC client can be configured to ignore the invalid certificate. The following code uses [HttpClientHandler.ServerCertificateCustomValidationCallback](/dotnet/api/system.net.http.httpclienthandler.servercertificatecustomvalidationcallback) to allow calls without a trusted certificate:
 
 ```csharp
-var httpClientHandler = new HttpClientHandler();
+var httpHandler = new HttpClientHandler();
 // Return `true` to allow certificates that are untrusted/invalid
-httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-var httpClient = new HttpClient(httpClientHandler);
+httpHandler.ServerCertificateCustomValidationCallback = 
+    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
 var channel = GrpcChannel.ForAddress("https://localhost:5001",
-    new GrpcChannelOptions { HttpClient = httpClient });
+    new GrpcChannelOptions { HttpHandler = httpHandler });
 var client = new Greet.GreeterClient(channel);
 ```
 
@@ -69,16 +70,19 @@ var client = new Greet.GreeterClient(channel);
 
 ## Call insecure gRPC services with .NET Core client
 
-Additional configuration is required to call insecure gRPC services with the .NET Core client. The gRPC client must set the `System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport` switch to `true` and use `http` in the server address:
+When an app is using .NET Core 3.x, additional configuration is required to call insecure gRPC services with the .NET Core client. The gRPC client must set the `System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport` switch to `true` and use `http` in the server address:
 
 ```csharp
 // This switch must be set before creating the GrpcChannel/HttpClient.
-AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+AppContext.SetSwitch(
+    "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 // The port number(5000) must match the port of the gRPC server.
 var channel = GrpcChannel.ForAddress("http://localhost:5000");
 var client = new Greet.GreeterClient(channel);
 ```
+
+.NET 5 apps don't need additional configuration, but to call insecure gRPC services they must use `Grpc.Net.Client` version 2.32.0 or later.
 
 ## Unable to start ASP.NET Core gRPC app on macOS
 
@@ -98,20 +102,27 @@ public static IHostBuilder CreateHostBuilder(string[] args) =>
             webBuilder.ConfigureKestrel(options =>
             {
                 // Setup a HTTP/2 endpoint without TLS.
-                options.ListenLocalhost(5000, o => o.Protocols = HttpProtocols.Http2);
+                options.ListenLocalhost(5000, o => o.Protocols = 
+                    HttpProtocols.Http2);
             });
             webBuilder.UseStartup<Startup>();
         });
 ```
 
+::: moniker range=">= aspnetcore-5.0"
+When an HTTP/2 endpoint is configured without TLS, the endpoint's [ListenOptions.Protocols](xref:fundamentals/servers/kestrel/endpoints#listenoptionsprotocols) must be set to `HttpProtocols.Http2`. `HttpProtocols.Http1AndHttp2` can't be used because TLS is required to negotiate HTTP/2. Without TLS, all connections to the endpoint default to HTTP/1.1, and gRPC calls fail.
+::: moniker-end
+
+::: moniker range="< aspnetcore-5.0"
 When an HTTP/2 endpoint is configured without TLS, the endpoint's [ListenOptions.Protocols](xref:fundamentals/servers/kestrel#listenoptionsprotocols) must be set to `HttpProtocols.Http2`. `HttpProtocols.Http1AndHttp2` can't be used because TLS is required to negotiate HTTP/2. Without TLS, all connections to the endpoint default to HTTP/1.1, and gRPC calls fail.
+::: moniker-end
 
 The gRPC client must also be configured to not use TLS. For more information, see [Call insecure gRPC services with .NET Core client](#call-insecure-grpc-services-with-net-core-client).
 
 > [!WARNING]
 > HTTP/2 without TLS should only be used during app development. Production apps should always use transport security. For more information, see [Security considerations in gRPC for ASP.NET Core](xref:grpc/security#transport-security).
 
-## gRPC C# assets are not code generated from *\*.proto* files
+## gRPC C# assets are not code generated from .proto files
 
 gRPC code generation of concrete clients and service base classes requires protobuf files and tooling to be referenced from a project. You must include:
 
@@ -119,13 +130,6 @@ gRPC code generation of concrete clients and service base classes requires proto
 * Package reference to the gRPC tooling package [Grpc.Tools](https://www.nuget.org/packages/Grpc.Tools/).
 
 For more information on generating gRPC C# assets, see <xref:grpc/basics>.
-
-By default, a `<Protobuf>` reference generates a concrete client and a service base class. The reference element's `GrpcServices` attribute can be used to limit C# asset generation. Valid `GrpcServices` options are:
-
-* `Both` (default when not present)
-* `Server`
-* `Client`
-* `None`
 
 An ASP.NET Core web app hosting gRPC services only needs the service base class generated:
 
@@ -142,3 +146,21 @@ A gRPC client app making gRPC calls only needs the concrete client generated:
   <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
 </ItemGroup>
 ```
+
+## WPF projects unable to generate gRPC C# assets from .proto files
+
+WPF projects have a [known issue](https://github.com/dotnet/wpf/issues/810) that prevents gRPC code generation from working correctly. Any gRPC types generated in a WPF project by referencing `Grpc.Tools` and *.proto* files will create compilation errors when used:
+
+> error CS0246: The type or namespace name 'MyGrpcServices' could not be found (are you missing a using directive or an assembly reference?)
+
+You can workaround this issue by:
+
+1. Create a new .NET Core class library project.
+2. In the new project, add references to enable [C# code generation from *\*.proto* files](xref:grpc/basics#generated-c-assets):
+    * Add a package reference to [Grpc.Tools](https://www.nuget.org/packages/Grpc.Tools/) package.
+    * Add *\*.proto* files to the `<Protobuf>` item group.
+3. In the WPF application, add a reference to the new project.
+
+The WPF application can use the gRPC generated types from the new class library project.
+
+[!INCLUDE[](~/includes/gRPCazure.md)]

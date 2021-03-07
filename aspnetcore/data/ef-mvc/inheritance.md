@@ -1,11 +1,12 @@
 ---
 title: "Tutorial: Implement inheritance - ASP.NET MVC with EF Core"
 description: "This tutorial will show you how to implement inheritance in the data model, using Entity Framework Core in an ASP.NET Core application."
-author: tdykstra
+author: rick-anderson
 ms.author: riande
 ms.custom: mvc
 ms.date: 03/27/2019
 ms.topic: tutorial
+no-loc: [appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: data/ef-mvc/inheritance
 ---
 
@@ -46,6 +47,9 @@ There are several ways this inheritance structure could be represented in the da
 This pattern of generating an entity inheritance structure from a single database table is called table-per-hierarchy (TPH) inheritance.
 
 An alternative is to make the database look more like the inheritance structure. For example, you could have only the name fields in the Person table and have separate Instructor and Student tables with the date fields.
+
+> [!WARNING]
+> Table Per Type (TPT) is not supported by EF Core 3.x, however it is has been implemented in [EF Core 5.0](/ef/core/what-is-new/ef-core-5.0/plan).
 
 ![Table-per-type inheritance](inheritance/_static/tpt.png)
 
@@ -88,7 +92,7 @@ This is all that the Entity Framework needs in order to configure table-per-hier
 
 Save your changes and build the project. Then open the command window in the project folder and enter the following command:
 
-```console
+```dotnetcli
 dotnet ef migrations add Inheritance
 ```
 
@@ -122,7 +126,7 @@ This code takes care of the following database update tasks:
 
 Run the `database update` command:
 
-```console
+```dotnetcli
 dotnet ef database update
 ```
 
@@ -145,7 +149,7 @@ Right-click the Person table, and then click **Show Table Data** to see the disc
 
 ## Get the code
 
-[Download or view the completed application.](https://github.com/aspnet/AspNetCore.Docs/tree/master/aspnetcore/data/ef-mvc/intro/samples/cu-final)
+[Download or view the completed application.](https://github.com/dotnet/AspNetCore.Docs/tree/master/aspnetcore/data/ef-mvc/intro/samples/cu-final)
 
 ## Additional resources
 
